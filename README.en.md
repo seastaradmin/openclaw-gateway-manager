@@ -21,10 +21,10 @@
 ## ✨ Features
 
 - 🔍 **Smart Status Query** - Auto-detect all OpenClaw instances
-- ✏️ **Modify Ports** - Automatically update config files + LaunchAgent plist
+- ✏️ **Modify Ports** - Automatically update config files + user service definitions
 - 🔄 **Restart Gateways** - Safely restart specific or all gateways
 - ✅ **Verify Configuration** - Check config consistency and port status
-- ➕ **Create Instances** - One-click creation with LaunchAgent setup
+- ➕ **Create Instances** - One-click creation with per-OS service setup
 - 🗑️ **Safe Deletion** - Triple confirmation + automatic backup
 - 📡 **Port Scanning** - Intelligently identify all instances
 
@@ -48,36 +48,39 @@
 
 ### Installation
 
+The manager repository can live in any folder. Do not install it inside a JVS/OpenClaw config directory.
+
 ```bash
-git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
+cd ~/openclaw-gateway-manager
 ```
 
 ### Usage
 
 ```bash
 # Check all gateway status (auto-detect all instances)
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh
+./scripts/gateway-status.sh
 
 # Check dependencies
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 
 # Scan ports
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-scan-ports.sh
+./scripts/gateway-scan-ports.sh
 
 # Modify port
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-set-port.sh local-shrimp 18888
+./scripts/gateway-set-port.sh local-shrimp 18888
 
 # Restart all gateways
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-restart.sh all
+./scripts/gateway-restart.sh all
 
 # Verify config
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-verify.sh local-shrimp
+./scripts/gateway-verify.sh local-shrimp
 
 # Create new instance
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-create.sh test-bot 18899 openim
+./scripts/gateway-create.sh test-bot 18899 openim
 
 # Delete instance (triple confirmation)
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-delete.sh test-bot
+./scripts/gateway-delete.sh test-bot
 ```
 
 ---
@@ -159,29 +162,28 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 ### Operating System
 
-- ✅ **macOS** (Required)
-- ❌ Windows / Linux (Not supported)
-
-Reason: Uses macOS-specific LaunchAgent, launchctl, and plutil.
+- ✅ **macOS** - full support with LaunchAgent
+- ✅ **Linux** - full support with `systemd --user`, falls back to manual mode if unavailable
+- ⚠️ **Windows** - detection and validation are supported; service creation is manual
 
 ### Dependencies
 
 Run to check dependencies:
 
 ```bash
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 ```
 
 **Required Tools:**
 
 | Tool | Purpose | Install Command |
 |------|---------|----------------|
-| `jq` | JSON processing | `brew install jq` |
-| `lsof` | Port check | Built-in macOS |
-| `plutil` | plist editing | Built-in macOS |
-| `launchctl` | LaunchAgent management | Built-in macOS |
-| `curl` | HTTP requests | Built-in macOS |
-| `node` | OpenClaw runtime | `brew install node` |
+| `jq` | JSON processing | `brew install jq` / `sudo apt install jq` |
+| `curl` | HTTP requests | Built-in on most systems |
+| `node` | OpenClaw runtime | `brew install node` / distro package manager |
+| `lsof` / `ss` / `netstat` | Port check | Any one is enough |
+| `launchctl` + `plutil` | macOS service management | Built-in macOS |
+| `systemctl` | Linux user service management | Built-in on most systemd distros |
 
 ---
 
@@ -199,9 +201,9 @@ Run to check dependencies:
 
 ✅ **Fixed** - All paths use `$HOME` instead of hardcoded user paths
 
-### LaunchAgent Permissions
+### Service Permissions
 
-- Creates user-level LaunchAgent only (`~/Library/LaunchAgents/`)
+- Creates user-level services only (`~/Library/LaunchAgents/` or `~/.config/systemd/user/`)
 - No system-level permissions or sudo required
 - Each user managed independently
 
@@ -215,4 +217,4 @@ MIT
 
 - **GitHub**: https://github.com/seastaradmin/openclaw-gateway-manager
 - **Author**: @seastaradmin
-- **Version**: 1.0.1
+- **Version**: 1.0.2

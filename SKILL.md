@@ -30,7 +30,7 @@
 ## ✨ 功能
 
 - 🔍 **智能查询** - 自动检测所有 OpenClaw 实例（本地/JVS/QClaw/云端）
-- ✏️ **修改端口** - 自动修改配置文件 + LaunchAgent plist
+- ✏️ **修改端口** - 自动修改配置文件 + 用户级服务定义
 - 🔄 **重启网关** - 安全重启指定网关或所有网关
 - ✅ **验证配置** - 检查配置一致性、端口监听状态
 - ➕ **创建新实例** - 一键创建新网关实例
@@ -57,36 +57,39 @@
 
 ### 安装
 
+仓库目录可以放在任意位置，不应该直接塞进 `~/.jvs/.openclaw/` 这类实例配置目录。
+
 ```bash
-git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
+cd ~/openclaw-gateway-manager
 ```
 
 ### 使用
 
 ```bash
 # 查看所有网关状态（自动检测所有实例）
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh
+./scripts/gateway-status.sh
 
 # 检查依赖
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 
 # 扫描端口
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-scan-ports.sh
+./scripts/gateway-scan-ports.sh
 
 # 修改端口
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-set-port.sh 本地虾 18888
+./scripts/gateway-set-port.sh 本地虾 18888
 
 # 重启所有网关
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-restart.sh all
+./scripts/gateway-restart.sh all
 
 # 验证配置
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-verify.sh 本地虾
+./scripts/gateway-verify.sh 本地虾
 
 # 创建新实例
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-create.sh test-bot 18899 openim
+./scripts/gateway-create.sh test-bot 18899 openim
 
 # 删除实例（三重确认）
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-delete.sh test-bot
+./scripts/gateway-delete.sh test-bot
 ```
 
 ---
@@ -152,29 +155,28 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 ### 操作系统
 
-- ✅ **macOS** (必需)
-- ❌ Windows / Linux (不支持)
-
-原因：使用 macOS 特有的 LaunchAgent、launchctl 和 plutil。
+- ✅ **macOS** - 完整支持，使用 LaunchAgent
+- ✅ **Linux** - 完整支持，优先使用 `systemd --user`，没有时回退手动模式
+- ⚠️ **Windows** - 支持扫描和校验，服务创建与启动以手动为主
 
 ### 依赖项
 
 运行以下命令检查依赖：
 
 ```bash
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 ```
 
 **必需工具：**
 
 | 工具 | 用途 | 安装命令 |
 |------|------|---------|
-| `jq` | JSON 处理 | `brew install jq` |
-| `lsof` | 端口检查 | macOS 自带 |
-| `plutil` | plist 编辑 | macOS 自带 |
-| `launchctl` | LaunchAgent 管理 | macOS 自带 |
-| `curl` | HTTP 请求 | macOS 自带 |
-| `node` | OpenClaw 运行 | `brew install node` |
+| `jq` | JSON 处理 | `brew install jq` / `sudo apt install jq` |
+| `curl` | HTTP 请求 | 大多数系统自带 |
+| `node` | OpenClaw 运行 | `brew install node` / 发行版包管理器 |
+| `lsof` / `ss` / `netstat` | 端口检查 | 任一可用即可 |
+| `launchctl` + `plutil` | macOS 服务管理 | macOS 自带 |
+| `systemctl` | Linux 用户级服务管理 | 大多数 systemd 发行版自带 |
 
 ---
 
@@ -192,9 +194,9 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 ✅ **已修复** - 所有路径使用 `$HOME` 而非硬编码用户路径
 
-### LaunchAgent 权限
+### 服务权限
 
-- 仅创建用户级 LaunchAgent（`~/Library/LaunchAgents/`）
+- 仅创建用户级服务（`~/Library/LaunchAgents/` 或 `~/.config/systemd/user/`）
 - 不需要系统级权限或 sudo
 - 每个用户独立管理
 
@@ -206,7 +208,7 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 **Problem:** Users may deploy multiple OpenClaw instances across different platforms and clouds (local, JVS Claw, QClaw, cloud, etc.), but lack a unified management tool.
 
-**Solution:** This skill automatically detects different configuration paths and统一管理 all OpenClaw variants, regardless of where they're deployed.
+**Solution:** This skill automatically detects different configuration paths and provides unified management for all OpenClaw variants, regardless of where they're deployed.
 
 **Core Principles:**
 - 🔍 **Auto-Discovery** - Scan all possible configuration paths
@@ -219,10 +221,10 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 ## ✨ Features
 
 - 🔍 **Smart Status Query** - Auto-detect all OpenClaw instances
-- ✏️ **Modify Ports** - Automatically update config files + LaunchAgent plist
+- ✏️ **Modify Ports** - Automatically update config files + user service definitions
 - 🔄 **Restart Gateways** - Safely restart specific or all gateways
 - ✅ **Verify Configuration** - Check config consistency and port status
-- ➕ **Create Instances** - One-click creation with LaunchAgent setup
+- ➕ **Create Instances** - One-click creation with per-OS service setup
 - 🗑️ **Safe Deletion** - Triple confirmation + automatic backup
 - 📡 **Port Scanning** - Intelligently identify all instances
 
@@ -246,36 +248,39 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 ### Installation
 
+The repository can live in any folder and should not be placed inside a JVS/OpenClaw config directory.
+
 ```bash
-git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
+cd ~/openclaw-gateway-manager
 ```
 
 ### Usage
 
 ```bash
 # Check all gateway status (auto-detect all instances)
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh
+./scripts/gateway-status.sh
 
 # Check dependencies
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 
 # Scan ports
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-scan-ports.sh
+./scripts/gateway-scan-ports.sh
 
 # Modify port
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-set-port.sh local-shrimp 18888
+./scripts/gateway-set-port.sh local-shrimp 18888
 
 # Restart all gateways
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-restart.sh all
+./scripts/gateway-restart.sh all
 
 # Verify config
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-verify.sh local-shrimp
+./scripts/gateway-verify.sh local-shrimp
 
 # Create new instance
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-create.sh test-bot 18899 openim
+./scripts/gateway-create.sh test-bot 18899 openim
 
 # Delete instance (triple confirmation)
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-delete.sh test-bot
+./scripts/gateway-delete.sh test-bot
 ```
 
 ---
@@ -326,29 +331,28 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 ### Operating System
 
-- ✅ **macOS** (Required)
-- ❌ Windows / Linux (Not supported)
-
-Reason: Uses macOS-specific LaunchAgent, launchctl, and plutil.
+- ✅ **macOS** - full support with LaunchAgent
+- ✅ **Linux** - full support with `systemd --user`, falls back to manual mode if unavailable
+- ⚠️ **Windows** - detection and validation are supported; service creation is manual
 
 ### Dependencies
 
 Run to check dependencies:
 
 ```bash
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 ```
 
 **Required Tools:**
 
 | Tool | Purpose | Install Command |
 |------|---------|----------------|
-| `jq` | JSON processing | `brew install jq` |
-| `lsof` | Port check | Built-in macOS |
-| `plutil` | plist editing | Built-in macOS |
-| `launchctl` | LaunchAgent management | Built-in macOS |
-| `curl` | HTTP requests | Built-in macOS |
-| `node` | OpenClaw runtime | `brew install node` |
+| `jq` | JSON processing | `brew install jq` / `sudo apt install jq` |
+| `curl` | HTTP requests | Built-in on most systems |
+| `node` | OpenClaw runtime | `brew install node` / distro package manager |
+| `lsof` / `ss` / `netstat` | Port check | Any one is enough |
+| `launchctl` + `plutil` | macOS service management | Built-in macOS |
+| `systemctl` | Linux user service management | Built-in on most systemd distros |
 
 ---
 
@@ -366,9 +370,9 @@ Run to check dependencies:
 
 ✅ **Fixed** - All paths use `$HOME` instead of hardcoded user paths
 
-### LaunchAgent Permissions
+### Service Permissions
 
-- Creates user-level LaunchAgent only (`~/Library/LaunchAgents/`)
+- Creates user-level services only (`~/Library/LaunchAgents/` or `~/.config/systemd/user/`)
 - No system-level permissions or sudo required
 - Each user managed independently
 
@@ -382,4 +386,174 @@ MIT License
 
 - **GitHub**: https://github.com/seastaradmin/openclaw-gateway-manager
 - **Author**: @seastaradmin
-- **Version**: 1.0.1
+- **Version**: 1.0.2
+
+---
+
+## 🌍 跨平台支持 Cross-Platform Support
+
+### 支持的操作系统
+
+| 系统 | 服务管理 | 配置路径 | 状态 |
+|------|---------|---------|------|
+| **macOS** | LaunchAgent (用户级) | `~/.openclaw/`, `~/.jvs/.openclaw/`, `~/.qclaw/` | ✅ |
+| **Linux** | systemd user service / manual fallback | `~/.openclaw/`, `~/.config/openclaw/`, `/opt/openclaw/` | ✅ |
+| **Windows** | 手动模式 | `%USERPROFILE%/.openclaw/`, `%APPDATA%/openclaw/` | ⚠️ |
+
+### 自动检测
+
+脚本会自动检测操作系统并使用相应的服务管理方式：
+
+```bash
+# macOS
+launchctl load ~/Library/LaunchAgents/ai.openclaw.gateway.plist
+
+# Linux
+systemctl --user start ai.openclaw.gateway-<name>
+
+# Windows
+# 不自动创建服务，用户手动选择
+```
+
+### 路径规范
+
+- **macOS/Linux**: 使用 `$HOME` 环境变量
+- **Windows**: 使用 `%USERPROFILE%` 和 `%APPDATA%`
+- ✅ 无硬编码路径，支持多用户
+
+---
+
+## 🔒 安全审查响应 Security Review Response
+
+### 指令范围 Instruction Scope
+
+**审查意见：**
+> Scripts read/write user files, create user-level service definitions, scan ports, and perform rm -rf.
+
+**回应：**
+✅ **这是预期行为** - 作为网关管理器，这些操作是必要的。
+
+**安全措施：**
+- ✅ 三重确认机制
+- ✅ 自动备份到 `~/.openclaw-deleted-backups/`
+- ✅ 仅创建用户级服务（无需 sudo）
+- ✅ 透明配置（plist 文件可审查）
+- ✅ 完整文档（SKILL.md + SECURITY_RESPONSE.md）
+
+### 持久性和权限 Persistence & Privilege
+
+**审查意见：**
+> Creates user-level service definitions for persistent execution.
+
+**回应：**
+✅ **这是必要功能** - 网关需要开机自启。
+
+**安全特性：**
+- ✅ 仅用户级服务（`~/Library/LaunchAgents/` 或 `~/.config/systemd/user/`）
+- ✅ 不需要系统权限
+- ✅ 可以随时卸载
+- ✅ 跨平台支持（Linux systemd, Windows 可选）
+
+### 破坏性操作 Destructive Operations
+
+**审查意见：**
+> Performs irreversible deletes.
+
+**回应：**
+✅ **已实施多层保护**：
+
+1. **三重确认** - 需要 3 次确认
+2. **自动备份** - 删除前备份
+3. **进程检查** - 停止进程后删除
+4. **文档警告** - 明确说明风险
+
+**查看安全响应全文：**
+```bash
+cat ./SECURITY_RESPONSE.md
+```
+
+---
+
+# English Documentation (Continued)
+
+## 🌍 Cross-Platform Support
+
+### Supported Operating Systems
+
+| OS | Service Management | Config Paths | Status |
+|----|-------------------|--------------|--------|
+| **macOS** | LaunchAgent (user-level) | `~/.openclaw/`, `~/.jvs/.openclaw/`, `~/.qclaw/` | ✅ |
+| **Linux** | systemd user service / manual fallback | `~/.openclaw/`, `~/.config/openclaw/`, `/opt/openclaw/` | ✅ |
+| **Windows** | Manual mode | `%USERPROFILE%/.openclaw/`, `%APPDATA%/openclaw/` | ⚠️ |
+
+### Auto-Detection
+
+Scripts automatically detect the OS and use appropriate service management:
+
+```bash
+# macOS
+launchctl load ~/Library/LaunchAgents/ai.openclaw.gateway.plist
+
+# Linux
+systemctl --user start ai.openclaw.gateway-<name>
+
+# Windows
+# No automatic service creation, user chooses manually
+```
+
+### Path Conventions
+
+- **macOS/Linux**: Uses `$HOME` environment variable
+- **Windows**: Uses `%USERPROFILE%` and `%APPDATA%`
+- ✅ No hardcoded paths, multi-user support
+
+---
+
+## 🔒 Security Review Response
+
+### Instruction Scope
+
+**Review Feedback:**
+> Scripts read/write user files, create user-level service definitions, scan ports, and perform rm -rf.
+
+**Response:**
+✅ **This is intended behavior** - These operations are necessary for a gateway manager.
+
+**Safety Measures:**
+- ✅ Triple confirmation mechanism
+- ✅ Automatic backup to `~/.openclaw-deleted-backups/`
+- ✅ User-level services only (no sudo required)
+- ✅ Transparent configuration (plist files auditable)
+- ✅ Complete documentation (SKILL.md + SECURITY_RESPONSE.md)
+
+### Persistence & Privilege
+
+**Review Feedback:**
+> Creates user-level service definitions for persistent execution.
+
+**Response:**
+✅ **This is necessary functionality** - Gateways need to auto-start.
+
+**Safety Features:**
+- ✅ User-level services only (`~/Library/LaunchAgents/` or `~/.config/systemd/user/`)
+- ✅ No system-level permissions required
+- ✅ Can be uninstalled anytime
+- ✅ Cross-platform support (Linux systemd, Windows optional)
+
+### Destructive Operations
+
+**Review Feedback:**
+> Performs irreversible deletes.
+
+**Response:**
+✅ **Multiple layers of protection implemented**:
+
+1. **Triple confirmation** - Requires 3 confirmations
+2. **Automatic backup** - Backs up before deletion
+3. **Process check** - Stops processes before deletion
+4. **Documentation warnings** - Clearly states risks
+
+**View full security response:**
+```bash
+cat ./SECURITY_RESPONSE.md
+```

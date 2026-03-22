@@ -2,7 +2,7 @@
   OpenClaw Gateway Manager - ClawHub 上传说明
 ═══════════════════════════════════════════════════
 
-📦 版本：v1.0.1 (安全修复版)
+📦 版本：v1.0.2 (跨平台与文档修正版)
 📁 位置：~/Desktop/openclaw-gateway-manager/
 
 ═══════════════════════════════════════════════════
@@ -17,7 +17,7 @@
 
 4. 点击「编辑」或「更新」按钮
 
-5. 修改版本号为：v1.0.1
+5. 修改版本号为：v1.0.2
 
 6. 点击「选择文件夹」
 
@@ -28,20 +28,21 @@
 
 --- 复制以下内容 ---
 
-🔒 Security Fix - 安全修复
+🌍 Cross-Platform Update - 跨平台修正
 
 修复：
-✅ 硬编码路径 → 使用 $HOME
-✅ 添加 macOS 系统声明
-✅ 添加依赖检查脚本
-✅ 添加安全警告
+✅ 安装路径说明纠正，不再误导安装到 JVS 实例目录
+✅ 仓库目录与实例配置目录彻底区分
+✅ 脚本增加统一兼容层
+✅ 文档和元数据版本统一到 1.0.2
 
 新增：
-✅ check-dependencies.sh
-✅ clawhub.json warnings
-✅ SKILL.md 安全章节
+✅ Linux `systemd --user` 支持
+✅ 中文 README
+✅ SECURITY_RESPONSE.md
+✅ scripts/common.sh
 
-所有安全问题已 100% 修复！
+多系统兼容性与安装说明问题已修正！
 
 --- 复制结束 ---
 
@@ -54,17 +55,17 @@
 ═══════════════════════════════════════════════════
 
 ✅ 硬编码 /Users/ping → $HOME
-✅ 添加 macOS 平台声明
-✅ 创建 check-dependencies.sh
-✅ 添加 clawhub.json warnings
-✅ Node 路径动态检测
-✅ SKILL.md 安全说明章节
+✅ 修正安装目录文档
+✅ 增加跨平台公共脚本层
+✅ 支持 Linux 用户级服务
+✅ 新增中文 README
+✅ 元数据与文档版本统一
 
 ═══════════════════════════════════════════════════
   审查对比
 ═══════════════════════════════════════════════════
 
-审查项          v0.1.0    v1.0.1
+审查项          v0.1.0    v1.0.2
 ─────────────────────────────────
 硬编码路径       ❌       ✅
 OS 声明          ❌       ✅
@@ -106,7 +107,7 @@ openclaw-gateway-manager/
 - "openclaw"
 - "port manager"
 
-安装命令：
-git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+推荐安装命令：
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
 
 ═══════════════════════════════════════════════════

@@ -2,7 +2,7 @@
 
 ## 📦 版本信息
 
-- **版本**: v1.0.1 (安全修复版)
+- **版本**: v1.0.2 (跨平台与文档修正版)
 - **作者**: seastaradmin
 - **GitHub**: https://github.com/seastaradmin/openclaw-gateway-manager
 - **许可证**: MIT
@@ -23,7 +23,7 @@
 
 1. 找到已提交的 `gateway-manager` 技能
 2. 点击「编辑」或「更新」
-3. 版本号改为：`v1.0.1`
+3. 版本号改为：`v1.0.2`
 4. 点击「选择文件夹」
 5. 选择此文件夹：`~/Desktop/openclaw-gateway-manager/`
 
@@ -62,7 +62,6 @@ openclaw-gateway-manager/
 ├── SKILL.md              # 双语技能文档（含安全说明）
 ├── README.en.md          # 英文 README
 ├── clawhub.json          # ClawHub 元数据（含 OS/依赖/警告）
-├── package.json          # NPM 配置
 ├── scripts/
 │   ├── check-dependencies.sh  # ✅ 新增：依赖检查
 │   ├── gateway-status.sh      # 查询状态
@@ -102,7 +101,7 @@ openclaw-gateway-manager/
 
 ## 📊 审查对比
 
-| 审查项 | v0.1.0 | v1.0.1 |
+| 审查项 | v0.1.0 | v1.0.2 |
 |--------|--------|--------|
 | 硬编码路径 | ❌ | ✅ |
 | OS 声明 | ❌ | ✅ |
@@ -113,15 +112,21 @@ openclaw-gateway-manager/
 
 ---
 
-## 🎯 安装命令
+## 🎯 安装说明
 
-用户安装此技能的命令：
+仓库目录不应该写死在 `~/.jvs/.openclaw/skills/` 里。
+
+- `~/.jvs/.openclaw/`、`~/.openclaw/`、`~/.qclaw/` 这些是 OpenClaw 实例配置目录
+- `openclaw-gateway-manager` 只是管理脚本仓库，可以放在任意目录
+
+推荐安装方式：
 
 ```bash
-git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
+cd ~/openclaw-gateway-manager
 ```
 
-或在 ClawHub 中点击「安装」按钮。
+或在 ClawHub 中点击「安装」按钮，由平台管理安装位置。
 
 ---
 
@@ -129,13 +134,13 @@ git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.o
 
 ```bash
 # 查看网关状态
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh
+./scripts/gateway-status.sh
 
 # 检查依赖
-~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+./scripts/check-dependencies.sh
 
 # 修改端口
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-set-port.sh 本地虾 18888
+./scripts/gateway-set-port.sh 本地虾 18888
 ```
 
 ---

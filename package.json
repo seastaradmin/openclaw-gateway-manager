@@ -1,14 +1,18 @@
 {
   "name": "openclaw-gateway-manager",
-  "version": "1.0.0",
-  "description": "🦞 Manage OpenClaw gateway instances - query status, modify ports, restart, verify, create and delete safely / 管理 OpenClaw 网关实例",
-  "description_zh": "🦞 管理 OpenClaw 网关实例 - 查询状态、修改端口、重启、验证、安全创建和删除",
+  "version": "1.0.2",
+  "description": "🦞 Cross-platform OpenClaw gateway manager - auto-detect instances, manage ports, restart, verify, create and delete safely",
+  "description_zh": "🦞 跨平台 OpenClaw 网关管理器 - 自动识别实例并安全管理端口、重启、校验、创建和删除",
   "keywords": [
     "openclaw",
     "gateway",
     "port-manager",
+    "cross-platform",
     "macos",
+    "linux",
+    "windows",
     "launchagent",
+    "systemd",
     "网关管理",
     "端口管理"
   ],
@@ -27,7 +31,9 @@
   },
   "files": [
     "SKILL.md",
+    "README.md",
     "README.en.md",
+    "SECURITY_RESPONSE.md",
     "scripts/",
     "references/"
   ],
@@ -35,6 +41,8 @@
     "node": ">=14.0.0"
   },
   "os": [
-    "darwin"
+    "darwin",
+    "linux",
+    "win32"
   ]
 }

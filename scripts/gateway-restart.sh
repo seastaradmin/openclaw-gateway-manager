@@ -1,6 +1,9 @@
 #!/bin/bash
 # gateway-restart.sh - 重启网关
 
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+. "$SCRIPT_DIR/common.sh"
+
 INSTANCE="$1"
 
 if [ -z "$INSTANCE" ]; then
@@ -9,47 +12,59 @@ if [ -z "$INSTANCE" ]; then
     echo "实例名:"
     echo "  local-shrimp / 本地虾 → ~/.jvs/.openclaw/"
     echo "  feishu / 飞书 → ~/.openclaw/"
+    echo "  qclaw / 腾讯 → ~/.qclaw/"
     echo "  all → 重启所有网关"
     exit 1
 fi
 
 restart_gateway() {
-    local instance_name="$1"
-    local config_dir="$2"
-    local plist="$3"
-    
-    echo "🔄 重启 $instance_name..."
-    
-    if [ -f "$plist" ]; then
-        launchctl kickstart -k gui/$(id -u)/$(basename "$plist" .plist)
-        sleep 2
-        echo "✅ $instance_name 已重启 (LaunchAgent)"
+    local raw_instance="$1"
+
+    resolve_instance "$raw_instance"
+    echo "🔄 重启 $INSTANCE_NAME..."
+
+    if restart_service "$INSTANCE_KEY" "$CONFIG_DIR" "$SERVICE_FILE"; then
+        echo "✅ $INSTANCE_NAME 已重启 ($(service_kind))"
     else
-        echo "⚠️  未找到 LaunchAgent: $plist"
-        echo "尝试手动重启..."
-        OPENCLAW_HOME="$config_dir" openclaw gateway restart
+        echo "❌ 自动重启失败"
+        echo "请手动执行：OPENCLAW_HOME=$CONFIG_DIR openclaw gateway restart"
     fi
 }
 
 case "$INSTANCE" in
     all)
-        restart_gateway "本地虾" "$HOME/.jvs/.openclaw" "$HOME/Library/LaunchAgents/ai.openclaw.gateway.plist"
-        echo ""
-        restart_gateway "飞书机器人" "$HOME/.openclaw" "$HOME/Library/LaunchAgents/ai.openclaw.gateway-feishu.plist"
-        ;;
-    local-shrimp|本地虾 |18789|local)
-        restart_gateway "本地虾" "$HOME/.jvs/.openclaw" "$HOME/Library/LaunchAgents/ai.openclaw.gateway.plist"
-        ;;
-    feishu|飞书|18790|fly)
-        restart_gateway "飞书机器人" "$HOME/.openclaw" "$HOME/Library/LaunchAgents/ai.openclaw.gateway-feishu.plist"
+        while IFS= read -r dir; do
+            [ -n "$dir" ] || continue
+            case "$dir" in
+                "$HOME/.jvs/.openclaw") target="local-shrimp" ;;
+                "$HOME/.openclaw") target="feishu" ;;
+                "$HOME/.qclaw") target="qclaw" ;;
+                *)
+                    base="$(basename "$dir")"
+                    case "$base" in
+                        .openclaw-*) target="${base#".openclaw-"}" ;;
+                        openclaw-*) target="${base#"openclaw-"}" ;;
+                        *) target="" ;;
+                    esac
+                    ;;
+            esac
+            [ -n "$target" ] || continue
+            restart_gateway "$target"
+            echo ""
+        done <<EOF
+$(list_candidate_dirs)
+EOF
         ;;
     *)
-        echo "❌ 未知实例名：$INSTANCE"
-        exit 1
+        restart_gateway "$INSTANCE"
         ;;
 esac
 
 echo ""
 echo "=== 验证状态 ==="
 sleep 2
-lsof -i -n -P | grep LISTEN | grep "node" | grep "openclaw" | awk -F: '{print "✅ 端口: " $2}' | awk '{print $1}'
+if command -v lsof >/dev/null 2>&1; then
+    lsof -i -n -P | grep LISTEN | grep "node" | grep "openclaw" | awk -F: '{print "✅ 端口: " $2}' | awk '{print $1}'
+elif command -v ss >/dev/null 2>&1; then
+    ss -lntp 2>/dev/null | grep -i openclaw
+fi

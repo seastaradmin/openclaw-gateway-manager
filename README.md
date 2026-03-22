@@ -1,101 +1,154 @@
 # OpenClaw Gateway Manager
 
-🦞 管理 OpenClaw 网关实例的超级工具！
+🦞 统一管理多平台、多发行版 OpenClaw 网关实例
 
-## ✨ 功能
+---
 
-- 🔍 **智能查询** - 识别主端口、辅助端口、运行状态、频道信息
-- ✏️ **修改端口** - 自动修改配置文件 + LaunchAgent plist
-- 🔄 **重启网关** - 安全重启指定网关或所有网关
-- ✅ **验证配置** - 检查配置一致性、端口监听状态
-- ➕ **创建新实例** - 一键创建新网关实例（自动配置 LaunchAgent）
-- 🗑️ **安全删除** - 三重确认 + 自动备份，防止误删
-- 📡 **端口扫描** - 智能识别所有 OpenClaw 实例
+## 简介
 
-## 🚀 快速开始
+`openclaw-gateway-manager` 是一个用于管理 OpenClaw 网关实例的脚本仓库。
 
-### 安装
+它会自动识别常见实例目录，例如：
+
+- `~/.openclaw/`
+- `~/.jvs/.openclaw/`
+- `~/.qclaw/`
+- `~/.config/openclaw/`
+- `~/.openclaw-<name>/`
+
+支持查看状态、扫描端口、修改端口、重启网关、验证配置、创建实例、删除实例。
+
+---
+
+## 先说清楚一件事
+
+这个仓库本身不是 OpenClaw 实例目录。
+
+- `~/.jvs/.openclaw/`、`~/.openclaw/`、`~/.qclaw/` 这些目录是实例配置目录
+- `openclaw-gateway-manager` 是独立的管理脚本仓库
+- 仓库可以放在任意位置，不建议直接安装到某个实例目录下面
+
+推荐安装方式：
 
 ```bash
-# 克隆到 OpenClaw skills 目录
-git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
+cd ~/openclaw-gateway-manager
 ```
 
-### 使用
+---
+
+## 支持情况
+
+| 系统 | 支持情况 | 服务管理 |
+|------|----------|----------|
+| macOS | ✅ 完整支持 | LaunchAgent |
+| Linux | ✅ 完整支持 | `systemd --user`，无可用时回退手动模式 |
+| Windows | ⚠️ 部分支持 | 以手动模式为主 |
+
+---
+
+## 依赖
+
+必需依赖：
+
+- `jq`
+- `curl`
+- `node`
+
+可选依赖：
+
+- `lsof` / `ss` / `netstat`，任一可用于端口检测
+- macOS 下建议有 `launchctl`、`plutil`
+- Linux 下建议有 `systemctl`
+
+检查依赖：
 
 ```bash
-# 查看所有网关状态
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh
-
-# 扫描端口
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-scan-ports.sh
-
-# 修改端口
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-set-port.sh 本地虾 18888
-
-# 重启网关
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-restart.sh all
-
-# 验证配置
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-verify.sh 本地虾
-
-# 创建新实例
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-create.sh test-bot 18899 openim
-
-# 删除实例（三重确认）
-~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-delete.sh test-bot
+./scripts/check-dependencies.sh
 ```
 
-## 📖 文档
+---
 
-详见 [SKILL.md](SKILL.md)
+## 常用命令
 
-## 🛡️ 安全特性
+查看所有实例状态：
 
-- **删除操作三重确认** - 防止误删
-- **自动备份** - 删除前备份到 `~/.openclaw-deleted-backups/`
-- **端口检查** - 修改前检查端口是否被占用
-- **配置验证** - 修改后自动验证
-
-## 📦 脚本列表
-
-| 脚本 | 功能 | 危险等级 |
-|------|------|---------|
-| `gateway-status.sh` | 查询状态 | 🟢 安全 |
-| `gateway-scan-ports.sh` | 端口扫描 | 🟢 安全 |
-| `gateway-set-port.sh` | 修改端口 | 🟡 中等 |
-| `gateway-restart.sh` | 重启网关 | 🟢 安全 |
-| `gateway-verify.sh` | 验证配置 | 🟢 安全 |
-| `gateway-create.sh` | 创建实例 | 🟡 中等 |
-| `gateway-delete.sh` | 删除实例 | 🔴 危险 |
-
-## 🎯 实例名别名
-
-- `本地虾` / `local-shrimp` / `18789` → `~/.jvs/.openclaw/`
-- `飞书` / `feishu` / `18790` → `~/.openclaw/`
-
-## 📝 示例输出
-
-```
-=== OpenClaw Gateway 实例 ===
-
-🔹 本地虾
-   主端口：18789
-   辅助端口：18791(浏览器) 18792(Canvas)
-   配置：~/.jvs/.openclaw
-   状态：✅ 运行中 (PID: 6512)
-   频道：openim
-   Dashboard: http://127.0.0.1:18789/
-
-🔹 飞书机器人
-   主端口：18790
-   辅助端口：18792(浏览器) 18793(Canvas)
-   配置：~/.openclaw
-   状态：✅ 运行中 (PID: 76822)
-   频道：feishu
-   Dashboard: http://127.0.0.1:18790/
+```bash
+./scripts/gateway-status.sh
 ```
 
-## 📄 License
+扫描端口：
 
-MIT
+```bash
+./scripts/gateway-scan-ports.sh
+```
+
+修改端口：
+
+```bash
+./scripts/gateway-set-port.sh local-shrimp 18888
+```
+
+重启所有网关：
+
+```bash
+./scripts/gateway-restart.sh all
+```
+
+验证实例配置：
+
+```bash
+./scripts/gateway-verify.sh local-shrimp
+```
+
+创建新实例：
+
+```bash
+./scripts/gateway-create.sh test-bot 18899 openim
+```
+
+删除实例：
+
+```bash
+./scripts/gateway-delete.sh test-bot
+```
+
+---
+
+## 实例别名
+
+| 别名 | 对应目录 |
+|------|----------|
+| `local-shrimp` / `本地虾` / `18789` | `~/.jvs/.openclaw/` |
+| `feishu` / `飞书` / `18790` | `~/.openclaw/` |
+| `qclaw` / `腾讯` / `28789` | `~/.qclaw/` |
+
+自定义实例默认使用：
+
+```bash
+~/.openclaw-<name>/
+```
+
+---
+
+## 安全说明
+
+- 删除实例需要三重确认
+- 删除前会自动备份到 `~/.openclaw-deleted-backups/`
+- 只创建用户级服务，不需要 `sudo`
+- 脚本会读写你的本地 OpenClaw 配置，请在执行前确认目标实例
+
+---
+
+## 相关文件
+
+- 英文说明：[README.en.md](/Users/ping/Desktop/openclaw-gateway-manager/README.en.md)
+- 技能文档：[SKILL.md](/Users/ping/Desktop/openclaw-gateway-manager/SKILL.md)
+- 安全说明：[SECURITY_RESPONSE.md](/Users/ping/Desktop/openclaw-gateway-manager/SECURITY_RESPONSE.md)
+
+---
+
+## 仓库
+
+GitHub：
+[https://github.com/seastaradmin/openclaw-gateway-manager](https://github.com/seastaradmin/openclaw-gateway-manager)
