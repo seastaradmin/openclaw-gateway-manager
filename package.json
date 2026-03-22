@@ -1,0 +1,12 @@
+{
+  "name": "openclaw-gateway-manager",
+  "version": "1.0.0",
+  "description": "Manage OpenClaw gateway instances - query status, modify ports, restart, verify, create and delete instances safely",
+  "keywords": ["openclaw", "gateway", "skill", "port-manager", "macos", "launchagent"],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/openclaw-gateway-manager.git"
+  }
+}
