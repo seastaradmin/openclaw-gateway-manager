@@ -48,7 +48,9 @@
 
 ### Installation
 
-The manager repository can live in any folder. Do not install it inside a JVS/OpenClaw config directory.
+For normal installation, let the skill system or runtime place this repository in the location it considers appropriate.
+Only use a manually chosen folder when you are cloning it for local development or debugging.
+In either case, do not confuse an OpenClaw instance config directory with this repository.
 
 ```bash
 git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager

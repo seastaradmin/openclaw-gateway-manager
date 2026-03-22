@@ -26,9 +26,11 @@
 
 - `~/.jvs/.openclaw/`、`~/.openclaw/`、`~/.qclaw/` 这些目录是实例配置目录
 - `openclaw-gateway-manager` 是独立的管理脚本仓库
-- 仓库可以放在任意位置，不建议直接安装到某个实例目录下面
+- 正常安装时，建议交给技能系统或模型运行时放到它认为合适的技能目录
+- 如果是手动克隆做开发或调试，再放到你自己的普通工作目录即可
+- 无论哪种方式，都不要把实例配置目录误当成这个仓库目录
 
-推荐安装方式：
+手动开发/调试时可这样克隆：
 
 ```bash
 git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager

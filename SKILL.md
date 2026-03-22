@@ -57,7 +57,9 @@
 
 ### 安装
 
-仓库目录可以放在任意位置，不应该直接塞进 `~/.jvs/.openclaw/` 这类实例配置目录。
+正常安装时，应交给技能系统或模型运行时放到它认为合适的技能目录。
+只有手动克隆用于开发或调试时，才建议放到你自己的普通工作目录。
+不要把 `~/.jvs/.openclaw/` 这类实例配置目录误当成仓库目录。
 
 ```bash
 git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
@@ -248,7 +250,9 @@ cd ~/openclaw-gateway-manager
 
 ### Installation
 
-The repository can live in any folder and should not be placed inside a JVS/OpenClaw config directory.
+For normal installation, let the skill system or runtime place this repository in the location it considers appropriate.
+Only use a manually chosen folder when you are cloning it for local development or debugging.
+Do not confuse a JVS/OpenClaw instance config directory with this repository.
 
 ```bash
 git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager

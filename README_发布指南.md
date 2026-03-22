@@ -119,7 +119,7 @@ openclaw-gateway-manager/
 - `~/.jvs/.openclaw/`、`~/.openclaw/`、`~/.qclaw/` 这些是 OpenClaw 实例配置目录
 - `openclaw-gateway-manager` 只是管理脚本仓库，可以放在任意目录
 
-推荐安装方式：
+手动开发/调试时可这样克隆：
 
 ```bash
 git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/openclaw-gateway-manager
