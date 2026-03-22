@@ -14,6 +14,13 @@ if [ -z "$INSTANCE_NAME" ] || [ -z "$PORT" ]; then
     exit 1
 fi
 
+# 检查依赖
+if ! command -v jq &> /dev/null; then
+    echo "❌ 错误：需要 jq 命令"
+    echo "安装：brew install jq"
+    exit 1
+fi
+
 CONFIG_DIR="$HOME/.openclaw-$INSTANCE_NAME"
 PLIST_FILE="$HOME/Library/LaunchAgents/ai.openclaw.gateway-$INSTANCE_NAME.plist"
 
@@ -38,15 +45,24 @@ echo "✅ 配置目录已创建：$CONFIG_DIR"
 if [ -f "$HOME/.jvs/.openclaw/openclaw.json" ]; then
     cp "$HOME/.jvs/.openclaw/openclaw.json" "$CONFIG_DIR/openclaw.json"
     echo "✅ 配置文件已复制"
+elif [ -f "$HOME/.openclaw/openclaw.json" ]; then
+    cp "$HOME/.openclaw/openclaw.json" "$CONFIG_DIR/openclaw.json"
+    echo "✅ 配置文件已复制"
 else
     echo "⚠️  未找到基础配置，需要手动配置"
 fi
 
 # 4. 修改端口
-cat "$CONFIG_DIR/openclaw.json" | jq ".gateway.port = $PORT" > "$CONFIG_DIR/openclaw.json.tmp" && mv "$CONFIG_DIR/openclaw.json.tmp" "$CONFIG_DIR/openclaw.json"
-echo "✅ 端口已设置为：$PORT"
+if [ -f "$CONFIG_DIR/openclaw.json" ]; then
+    cat "$CONFIG_DIR/openclaw.json" | jq ".gateway.port = $PORT" > "$CONFIG_DIR/openclaw.json.tmp" && mv "$CONFIG_DIR/openclaw.json.tmp" "$CONFIG_DIR/openclaw.json"
+    echo "✅ 端口已设置为：$PORT"
+fi
 
-# 5. 创建 LaunchAgent plist
+# 5. 检测 Node 路径
+NODE_PATH=$(which node 2>/dev/null || echo "/opt/homebrew/opt/node/bin/node")
+echo "ℹ️  Node 路径：$NODE_PATH"
+
+# 6. 创建 LaunchAgent plist（使用动态路径）
 cat > "$PLIST_FILE" << PLISTEOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -66,11 +82,9 @@ cat > "$PLIST_FILE" << PLISTEOF
     <integer>63</integer>
     <key>ProgramArguments</key>
     <array>
-        <string>/opt/homebrew/opt/node/bin/node</string>
-        <string>/opt/homebrew/lib/node_modules/openclaw/dist/entry.js</string>
-        <string>gateway</string>
-        <string>--port</string>
-        <string>$PORT</string>
+        <string>$NODE_PATH</string>
+        <string>-e</string>
+        <string>require('child_process').execSync('openclaw gateway --port $PORT', {cwd: '$CONFIG_DIR', stdio: 'inherit', env: {...process.env, OPENCLAW_HOME: '$CONFIG_DIR'}})</string>
     </array>
     <key>StandardOutPath</key>
     <string>$CONFIG_DIR/logs/gateway.log</string>
@@ -79,15 +93,7 @@ cat > "$PLIST_FILE" << PLISTEOF
     <key>EnvironmentVariables</key>
     <dict>
         <key>HOME</key>
-        <string>/Users/ping</string>
-        <key>TMPDIR</key>
-        <string>/var/folders/ym/jzs75j355zx54vh1jtcsg7wr0000gn/T/</string>
-        <key>NODE_EXTRA_CA_CERTS</key>
-        <string>/etc/ssl/cert.pem</string>
-        <key>NODE_USE_SYSTEM_CA</key>
-        <string>1</string>
-        <key>PATH</key>
-        <string>/Users/ping/.local/bin:/Users/ping/.npm-global/bin:/Users/ping/bin:/Users/ping/.volta/bin:/Users/ping/.asdf/shims:/Users/ping/.bun/bin:/Users/ping/Library/Application Support/fnm/aliases/default/bin:/Users/ping/.fnm/aliases/default/bin:/Users/ping/Library/pnpm:/Users/ping/.local/share/pnpm:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+        <string>$HOME</string>
         <key>OPENCLAW_HOME</key>
         <string>$CONFIG_DIR</string>
         <key>OPENCLAW_GATEWAY_PORT</key>
@@ -98,12 +104,12 @@ cat > "$PLIST_FILE" << PLISTEOF
 PLISTEOF
 echo "✅ LaunchAgent 已创建：$PLIST_FILE"
 
-# 6. 加载并启动
+# 7. 加载并启动
 launchctl load "$PLIST_FILE"
 sleep 3
 echo "✅ 网关已启动"
 
-# 7. 验证
+# 8. 验证
 echo ""
 echo "=== 验证 ==="
 if lsof -i :$PORT | grep LISTEN > /dev/null 2>&1; then

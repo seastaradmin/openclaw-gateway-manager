@@ -1,0 +1,85 @@
+{
+  "name": "gateway-manager",
+  "displayName": {
+    "en": "OpenClaw Gateway Manager",
+    "zh": "OpenClaw 网关管理器"
+  },
+  "version": "1.0.0",
+  "description": {
+    "en": "🦞 Manage OpenClaw gateway instances - query status, modify ports, restart, verify, create and delete safely with triple confirmation and automatic backup. macOS only.",
+    "zh": "🦞 管理 OpenClaw 网关实例 - 查询状态、修改端口、重启、验证、安全创建和删除，支持三重确认和自动备份。仅限 macOS。"
+  },
+  "author": "seastaradmin",
+  "license": "MIT",
+  "repository": "https://github.com/seastaradmin/openclaw-gateway-manager",
+  "homepage": "https://github.com/seastaradmin/openclaw-gateway-manager#readme",
+  "os": ["darwin"],
+  "platform": {
+    "required": ["macos"],
+    "notSupported": ["windows", "linux"]
+  },
+  "dependencies": {
+    "required": ["jq", "node", "openclaw"],
+    "optional": [],
+    "systemProvided": ["lsof", "plutil", "launchctl", "curl"]
+  },
+  "tags": {
+    "en": ["openclaw", "gateway", "port-manager", "macos", "launchagent", "system-tools"],
+    "zh": ["openclaw", "网关", "端口管理", "macos", "系统工具"]
+  },
+  "category": "System Tools",
+  "featured": true,
+  "warnings": [
+    {
+      "type": "os_requirement",
+      "message": {
+        "en": "This skill requires macOS. It uses LaunchAgent, launchctl, and plutil which are macOS-specific.",
+        "zh": "此技能需要 macOS 系统。使用了 LaunchAgent、launchctl 和 plutil 等 macOS 特有命令。"
+      }
+    },
+    {
+      "type": "destructive_operation",
+      "message": {
+        "en": "Delete operation uses rm -rf with triple confirmation and automatic backup. Use with caution.",
+        "zh": "删除操作使用 rm -rf，有三重确认和自动备份。请谨慎使用。"
+      }
+    },
+    {
+      "type": "dependencies",
+      "message": {
+        "en": "Requires jq (brew install jq), node, and OpenClaw installed. Run check-dependencies.sh to verify.",
+        "zh": "需要 jq (brew install jq)、node 和 OpenClaw。运行 check-dependencies.sh 验证。"
+      }
+    }
+  ],
+  "installation": {
+    "en": "git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager && ~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh",
+    "zh": "git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager && ~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh"
+  },
+  "usage": {
+    "en": "Run ~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh to check gateway status",
+    "zh": "运行 ~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh 查看网关状态"
+  },
+  "highlights": {
+    "en": [
+      "🔍 Smart gateway status query with port identification",
+      "🗑️ Safe deletion with triple confirmation and automatic backup",
+      "➕ One-click instance creation with LaunchAgent setup",
+      "📡 Intelligent port scanning for all OpenClaw instances",
+      "✅ Dependency checker included"
+    ],
+    "zh": [
+      "🔍 智能网关状态查询，自动识别端口",
+      "🗑️ 安全删除功能，三重确认 + 自动备份",
+      "➕ 一键创建实例，自动配置 LaunchAgent",
+      "📡 智能端口扫描，识别所有 OpenClaw 实例",
+      "✅ 包含依赖检查工具"
+    ]
+  },
+  "scripts": {
+    "preInstall": null,
+    "postInstall": "scripts/check-dependencies.sh",
+    "preUninstall": null,
+    "postUninstall": null
+  }
+}

@@ -224,3 +224,69 @@ MIT License
 - GitHub: https://github.com/seastaradmin/openclaw-gateway-manager
 - Author: @seastaradmin
 - Version: 1.0.0
+
+---
+
+## ⚙️ 系统要求 System Requirements
+
+### 操作系统 Operating System
+
+- ✅ **macOS** (必需 / Required)
+- ❌ Windows / Linux (不支持 / Not supported)
+
+原因：此技能使用 macOS 特有的 LaunchAgent、launchctl 和 plutil 命令。
+
+Reason: This skill uses macOS-specific commands: LaunchAgent, launchctl, and plutil.
+
+### 依赖项 Dependencies
+
+运行以下命令检查依赖：
+
+```bash
+~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh
+```
+
+**必需工具 Required Tools:**
+
+| 工具 | 用途 | 安装命令 |
+|------|------|---------|
+| `jq` | JSON 处理 | `brew install jq` |
+| `lsof` | 端口检查 | macOS 自带 |
+| `plutil` | plist 编辑 | macOS 自带 |
+| `launchctl` | LaunchAgent 管理 | macOS 自带 |
+| `curl` | HTTP 请求 | macOS 自带 |
+| `node` | OpenClaw 运行 | `brew install node` |
+
+### 环境变量 Environment Variables
+
+无需特殊环境变量。脚本会自动使用 `$HOME` 和当前用户配置。
+
+No special environment variables required. Scripts automatically use `$HOME` and current user config.
+
+---
+
+## ⚠️ 安全说明 Safety Notes
+
+### 删除操作 Deletion
+
+- ✅ **三重确认** - 需要 3 次确认才能执行删除
+- ✅ **自动备份** - 删除前备份到 `~/.openclaw-deleted-backups/`
+- ⚠️ **破坏性操作** - 使用 `rm -rf` 删除配置目录
+
+**建议：** 首次使用前手动备份重要数据
+
+**Recommendation:** Manually backup important data before first use
+
+### 硬编码路径 Hardcoded Paths
+
+✅ **已修复** - 所有路径现在使用 `$HOME` 而非硬编码用户路径
+
+✅ **Fixed** - All paths now use `$HOME` instead of hardcoded user paths
+
+### LaunchAgent 权限 LaunchAgent Permissions
+
+- 仅创建用户级 LaunchAgent（`~/Library/LaunchAgents/`）
+- 不需要系统级权限或 sudo
+- 每个用户独立管理
+
+Creates user-level LaunchAgent only. No system-level permissions or sudo required.
