@@ -1,12 +1,40 @@
 {
   "name": "openclaw-gateway-manager",
   "version": "1.0.0",
-  "description": "Manage OpenClaw gateway instances - query status, modify ports, restart, verify, create and delete instances safely",
-  "keywords": ["openclaw", "gateway", "skill", "port-manager", "macos", "launchagent"],
-  "author": "Your Name",
+  "description": "🦞 Manage OpenClaw gateway instances - query status, modify ports, restart, verify, create and delete safely / 管理 OpenClaw 网关实例",
+  "description_zh": "🦞 管理 OpenClaw 网关实例 - 查询状态、修改端口、重启、验证、安全创建和删除",
+  "keywords": [
+    "openclaw",
+    "gateway",
+    "port-manager",
+    "macos",
+    "launchagent",
+    "网关管理",
+    "端口管理"
+  ],
+  "author": "seastaradmin",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/openclaw-gateway-manager.git"
-  }
+    "url": "https://github.com/seastaradmin/openclaw-gateway-manager.git"
+  },
+  "homepage": "https://github.com/seastaradmin/openclaw-gateway-manager#readme",
+  "bugs": {
+    "url": "https://github.com/seastaradmin/openclaw-gateway-manager/issues"
+  },
+  "scripts": {
+    "test": "bash scripts/gateway-status.sh"
+  },
+  "files": [
+    "SKILL.md",
+    "README.en.md",
+    "scripts/",
+    "references/"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "darwin"
+  ]
 }
