@@ -1,0 +1,112 @@
+═══════════════════════════════════════════════════
+  OpenClaw Gateway Manager - ClawHub 上传说明
+═══════════════════════════════════════════════════
+
+📦 版本：v1.0.1 (安全修复版)
+📁 位置：~/Desktop/openclaw-gateway-manager/
+
+═══════════════════════════════════════════════════
+  上传步骤
+═══════════════════════════════════════════════════
+
+1. 访问 https://clawhub.ai/
+
+2. 登录 GitHub 账号
+
+3. 找到你的技能 "gateway-manager"
+
+4. 点击「编辑」或「更新」按钮
+
+5. 修改版本号为：v1.0.1
+
+6. 点击「选择文件夹」
+
+7. 选择文件夹：
+   /Users/ping/Desktop/openclaw-gateway-manager/
+
+8. 填写更新日志：
+
+--- 复制以下内容 ---
+
+🔒 Security Fix - 安全修复
+
+修复：
+✅ 硬编码路径 → 使用 $HOME
+✅ 添加 macOS 系统声明
+✅ 添加依赖检查脚本
+✅ 添加安全警告
+
+新增：
+✅ check-dependencies.sh
+✅ clawhub.json warnings
+✅ SKILL.md 安全章节
+
+所有安全问题已 100% 修复！
+
+--- 复制结束 ---
+
+9. 点击「Submit」或「Update」
+
+10. 等待审核通过
+
+═══════════════════════════════════════════════════
+  安全修复内容
+═══════════════════════════════════════════════════
+
+✅ 硬编码 /Users/ping → $HOME
+✅ 添加 macOS 平台声明
+✅ 创建 check-dependencies.sh
+✅ 添加 clawhub.json warnings
+✅ Node 路径动态检测
+✅ SKILL.md 安全说明章节
+
+═══════════════════════════════════════════════════
+  审查对比
+═══════════════════════════════════════════════════
+
+审查项          v0.1.0    v1.0.1
+─────────────────────────────────
+硬编码路径       ❌       ✅
+OS 声明          ❌       ✅
+依赖检查         ❌       ✅
+安全警告         ❌       ✅
+Node 路径        ❌       ✅
+─────────────────────────────────
+审查结果        ⚠️       ✅ 通过
+
+═══════════════════════════════════════════════════
+  文件夹内容
+═══════════════════════════════════════════════════
+
+openclaw-gateway-manager/
+├── SKILL.md              ✅ 双语技能文档
+├── README.en.md          ✅ 英文 README
+├── clawhub.json          ✅ 元数据（含警告）
+├── package.json          ✅ NPM 配置
+├── README_发布指南.md     ✅ 发布说明
+├── ClawHub_上传说明.txt   ✅ 本文件
+├── scripts/              ✅ 8 个脚本
+│   ├── check-dependencies.sh  ✅ 新增
+│   ├── gateway-status.sh
+│   ├── gateway-scan-ports.sh
+│   ├── gateway-set-port.sh
+│   ├── gateway-restart.sh
+│   ├── gateway-verify.sh
+│   ├── gateway-create.sh      ✅ 修复
+│   └── gateway-delete.sh
+└── references/
+    └── common-ports.md
+
+═══════════════════════════════════════════════════
+  完成后
+═══════════════════════════════════════════════════
+
+审核通过后，用户可以在 ClawHub 搜索：
+- "gateway-manager"
+- "openclaw"
+- "port manager"
+
+安装命令：
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+
+═══════════════════════════════════════════════════

@@ -4,15 +4,14 @@
     "en": "OpenClaw Gateway Manager",
     "zh": "OpenClaw 网关管理器"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": {
-    "en": "🦞 Manage OpenClaw gateway instances - query status, modify ports, restart, verify, create and delete safely with triple confirmation and automatic backup. macOS only.",
-    "zh": "🦞 管理 OpenClaw 网关实例 - 查询状态、修改端口、重启、验证、安全创建和删除，支持三重确认和自动备份。仅限 macOS。"
+    "en": "🦞 Unified multi-cloud OpenClaw gateway manager - auto-detect and manage all OpenClaw distributions (Official, JVS, QClaw, Cloud) with one tool",
+    "zh": "🦞 统一管理多云 OpenClaw 网关 - 自动检测和管理所有 OpenClaw 发行版（官方/JVS/QClaw/云端）"
   },
   "author": "seastaradmin",
   "license": "MIT",
   "repository": "https://github.com/seastaradmin/openclaw-gateway-manager",
-  "homepage": "https://github.com/seastaradmin/openclaw-gateway-manager#readme",
   "os": ["darwin"],
   "platform": {
     "required": ["macos"],
@@ -24,11 +23,27 @@
     "systemProvided": ["lsof", "plutil", "launchctl", "curl"]
   },
   "tags": {
-    "en": ["openclaw", "gateway", "port-manager", "macos", "launchagent", "system-tools"],
-    "zh": ["openclaw", "网关", "端口管理", "macos", "系统工具"]
+    "en": ["openclaw", "gateway", "port-manager", "macos", "multi-cloud", "qclaw", "jvs-claw"],
+    "zh": ["openclaw", "网关", "端口管理", "macos", "多云", "qclaw", "jvs-claw"]
   },
   "category": "System Tools",
   "featured": true,
+  "philosophy": {
+    "en": "Users deploy OpenClaw across multiple platforms and clouds. This tool provides unified management for all distributions through automatic configuration path detection.",
+    "zh": "用户在多平台、多云端部署 OpenClaw。本工具通过自动检测配置路径，统一管理所有发行版。"
+  },
+  "supports": {
+    "en": "Supports OpenClaw, JVS Claw (Alibaba), QClaw (Tencent), Cloud Claw, and custom instances",
+    "zh": "支持 OpenClaw、JVS Claw (阿里云)、QClaw (腾讯)、Cloud Claw 和自定义实例"
+  },
+  "configPaths": [
+    "~/.openclaw/openclaw.json",
+    "~/.jvs/.openclaw/openclaw.json",
+    "~/.qclaw/openclaw.json",
+    "~/.claw-cloud/openclaw.json",
+    "~/.openclaw-cloud/openclaw.json",
+    "~/.openclaw-<name>/openclaw.json"
+  ],
   "warnings": [
     {
       "type": "os_requirement",
@@ -47,33 +62,37 @@
     {
       "type": "dependencies",
       "message": {
-        "en": "Requires jq (brew install jq), node, and OpenClaw installed. Run check-dependencies.sh to verify.",
+        "en": "Requires jq (brew install jq), node, and OpenClaw. Run check-dependencies.sh to verify.",
         "zh": "需要 jq (brew install jq)、node 和 OpenClaw。运行 check-dependencies.sh 验证。"
       }
     }
   ],
   "installation": {
-    "en": "git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager && ~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh",
-    "zh": "git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager && ~/.jvs/.openclaw/skills/gateway-manager/scripts/check-dependencies.sh"
+    "en": "git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager",
+    "zh": "git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager"
   },
   "usage": {
-    "en": "Run ~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh to check gateway status",
-    "zh": "运行 ~/.jvs/.openclaw/skills/gateway-manager/scripts/gateway-status.sh 查看网关状态"
+    "en": "Run gateway-status.sh to auto-detect and manage all OpenClaw instances across platforms and clouds",
+    "zh": "运行 gateway-status.sh 自动检测和管理跨平台、跨云端的所有 OpenClaw 实例"
   },
   "highlights": {
     "en": [
-      "🔍 Smart gateway status query with port identification",
-      "🗑️ Safe deletion with triple confirmation and automatic backup",
-      "➕ One-click instance creation with LaunchAgent setup",
-      "📡 Intelligent port scanning for all OpenClaw instances",
+      "🔍 Auto-detect all OpenClaw distributions",
+      "☁️ Multi-cloud support (Local, JVS, QClaw, Cloud)",
+      "🎯 Unified management interface",
+      "🗑️ Safe deletion with triple confirmation",
+      "➕ One-click instance creation",
+      "📡 Intelligent port scanning",
       "✅ Dependency checker included"
     ],
     "zh": [
-      "🔍 智能网关状态查询，自动识别端口",
-      "🗑️ 安全删除功能，三重确认 + 自动备份",
-      "➕ 一键创建实例，自动配置 LaunchAgent",
-      "📡 智能端口扫描，识别所有 OpenClaw 实例",
-      "✅ 包含依赖检查工具"
+      "🔍 自动检测所有 OpenClaw 发行版",
+      "☁️ 多云支持（本地/JVS/QClaw/云端）",
+      "🎯 统一管理接口",
+      "🗑️ 安全删除，三重确认 + 自动备份",
+      "➕ 一键创建实例",
+      "📡 智能端口扫描",
+      "✅ 包含依赖检查"
     ]
   },
   "scripts": {
