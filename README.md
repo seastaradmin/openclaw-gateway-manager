@@ -18,7 +18,7 @@
 
 ```bash
 # 克隆到 OpenClaw skills 目录
-git clone https://github.com/YOUR_USERNAME/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
+git clone https://github.com/seastaradmin/openclaw-gateway-manager.git ~/.jvs/.openclaw/skills/gateway-manager
 ```
 
 ### 使用
